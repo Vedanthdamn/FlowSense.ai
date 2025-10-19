@@ -951,12 +951,15 @@ Error downloading yolov8n.pt
 
 **Solution:**
 ```bash
-# Manual download
+# Manual download (Note: v0.0.0 is the official release tag used by Ultralytics)
 cd backend
 curl -L https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8n.pt -o yolov8n.pt
 
 # Or use wget
 wget https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8n.pt
+
+# Alternatively, let Ultralytics auto-download on first run
+python3 -c "from ultralytics import YOLO; YOLO('yolov8n.pt')"
 ```
 
 ### Issue 7: npm Install Fails
