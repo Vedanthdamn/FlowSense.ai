@@ -249,6 +249,8 @@ This creates 3 sample videos in `sample_videos/` directory:
 
 The system works out-of-the-box, but you can customize settings:
 
+#### Backend Configuration
+
 ```bash
 cd backend
 
@@ -262,6 +264,28 @@ vim .env
 # or
 code .env  # If you have VS Code
 ```
+
+#### Frontend Configuration (Optional)
+
+To customize the API base URL:
+
+```bash
+cd frontend
+
+# Copy environment template
+cp .env.example .env
+
+# Edit the file
+nano .env
+```
+
+The default configuration:
+```env
+# API Configuration
+VITE_API_BASE_URL=http://localhost:5000
+```
+
+**Note:** If the backend runs on a different host or port, update `VITE_API_BASE_URL` accordingly. The frontend will automatically use this URL for all API calls.
 
 ### Step 3.2: Supabase Setup (Optional)
 
@@ -1086,6 +1110,61 @@ git commit -m "Resolve merge conflicts"
 
 # Push again
 git push
+```
+
+### Issue 13: Frontend Cannot Connect to Backend
+
+**Symptom:**
+```
+Failed to fetch traffic status
+Cannot connect to backend server
+```
+
+**Solution:**
+
+1. **Check both servers are running:**
+```bash
+# In Terminal 1 - Backend should show:
+# * Running on http://127.0.0.1:5000
+
+# In Terminal 2 - Frontend should show:
+# ➜  Local:   http://localhost:3000/
+```
+
+2. **Test backend directly:**
+```bash
+# Test using localhost (or 127.0.0.1)
+curl http://localhost:5000/api/health
+# Should return: {"success":true,"status":"healthy",...}
+
+# Alternative:
+curl http://127.0.0.1:5000/api/health
+```
+
+3. **Check browser console for detailed logs:**
+- Open browser DevTools (F12)
+- Go to Console tab
+- Look for `[FlowSense]` log messages
+- These will show the API URL being used and any connection errors
+
+4. **Verify environment variables (if using custom API URL):**
+```bash
+cd frontend
+cat .env
+
+# Should show:
+# VITE_API_BASE_URL=http://localhost:5000
+
+# If running backend on different host/port, update accordingly
+```
+
+5. **Check CORS configuration:**
+- Backend should show CORS logs in terminal
+- If you see CORS errors in browser console, verify backend `app.py` has proper CORS setup
+
+6. **Try clearing browser cache and reloading:**
+```bash
+# Or hard refresh: Ctrl+Shift+R (Linux/Windows) or Cmd+Shift+R (Mac)
 ```
 
 ---
