@@ -19,7 +19,32 @@ function App() {
   const [error, setError] = useState(null)
   const [isConnected, setIsConnected] = useState(false)
 
+  const checkBackendHealth = async () => {
+    try {
+      console.log(`[FlowSense] Checking backend health at: ${API_BASE_URL}/health`)
+      const response = await axios.get(`${API_BASE_URL}/health`)
+      console.log('[FlowSense] Health check response:', response.data)
+      if (response.data.status === 'ok') {
+        console.log('✅ Backend connection successful:', response.data.message)
+        setIsConnected(true)
+      } else {
+        console.warn('⚠️ Backend health check returned unexpected status:', response.data)
+        setIsConnected(false)
+      }
+    } catch (err) {
+      console.error('❌ Backend health check failed:', err)
+      if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+        console.error('[FlowSense] Cannot connect to backend at:', API_BASE_URL)
+        console.error('[FlowSense] Please ensure Flask backend is running on http://localhost:5000')
+      }
+      setIsConnected(false)
+    }
+  }
+
   useEffect(() => {
+    // Check backend health on startup
+    checkBackendHealth()
+    
     // Poll for status updates every 1 second
     const interval = setInterval(fetchStatus, 1000)
     
