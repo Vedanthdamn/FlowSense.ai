@@ -17,6 +17,7 @@ from supabase_logger import SupabaseLogger
 
 app = Flask(__name__)
 # Configure CORS to allow requests from frontend (localhost:3000)
+# NOTE: origins="*" is for development only. In production, restrict to specific domains.
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Global variables
@@ -290,4 +291,5 @@ if __name__ == '__main__':
     print("  GET  /api/health   - Health check")
     print("=" * 50)
     
+    # NOTE: debug=True is for development only. Set to False in production.
     app.run(host='0.0.0.0', port=5000, debug=True, threaded=True)
