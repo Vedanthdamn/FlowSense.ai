@@ -880,6 +880,8 @@ After submitting:
 
 ## 10. Troubleshooting
 
+> 🔧 **For comprehensive troubleshooting including backend connection errors, see the [TROUBLESHOOTING.md](TROUBLESHOOTING.md) guide.**
+
 ### Issue 1: Python Not Found
 
 **Symptom:**

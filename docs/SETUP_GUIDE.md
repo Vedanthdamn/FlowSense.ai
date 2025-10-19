@@ -136,33 +136,37 @@ SUPABASE_KEY=your_anon_key_here
 
 ## Troubleshooting
 
-### Problem: "command not found: python3"
+> 🔧 **For comprehensive troubleshooting including backend connection errors, see the [TROUBLESHOOTING.md](../TROUBLESHOOTING.md) guide.**
+
+### Quick Fixes
+
+#### Problem: "command not found: python3"
 **Solution**: Install Python via Homebrew
 ```bash
 brew install python@3.10
 ```
 
-### Problem: "command not found: node"
+#### Problem: "command not found: node"
 **Solution**: Install Node.js via Homebrew
 ```bash
 brew install node
 ```
 
-### Problem: "No module named 'cv2'"
+#### Problem: "No module named 'cv2'"
 **Solution**: Reinstall opencv-python
 ```bash
 pip uninstall opencv-python
 pip install opencv-python-headless
 ```
 
-### Problem: YOLOv8 not downloading
+#### Problem: YOLOv8 not downloading
 **Solution**: Manual download
 ```bash
 cd backend
 wget https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8n.pt
 ```
 
-### Problem: Port already in use
+#### Problem: Port already in use
 **Solution**: Kill processes on ports
 ```bash
 # Kill process on port 5000
@@ -172,13 +176,17 @@ lsof -ti:5000 | xargs kill -9
 lsof -ti:3000 | xargs kill -9
 ```
 
-### Problem: npm install fails
+#### Problem: npm install fails
 **Solution**: Clear cache and retry
 ```bash
 npm cache clean --force
 rm -rf node_modules package-lock.json
 npm install
 ```
+
+#### Problem: "Cannot connect to backend server"
+
+See the comprehensive **[Troubleshooting Guide](../TROUBLESHOOTING.md)** for detailed solutions to backend connection issues.
 
 ## Testing the System
 

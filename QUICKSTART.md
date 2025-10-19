@@ -194,28 +194,33 @@ jupyter notebook train.ipynb
 
 ## Troubleshooting
 
-### "Python not found"
+### Quick Fixes
+
+**"Python not found"**
 ```bash
 brew install python@3.10
 ```
 
-### "Node not found"
+**"Node not found"**
 ```bash
 brew install node
 ```
 
-### "Port already in use"
+**"Port already in use"**
 ```bash
 lsof -ti:5000 | xargs kill -9  # Backend
 lsof -ti:3000 | xargs kill -9  # Frontend
 ```
 
-### YOLOv8 download fails
-It will auto-retry. Or manually:
+**YOLOv8 download fails**
 ```bash
 cd backend
 wget https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8n.pt
 ```
+
+**Backend Connection Error**
+
+If you see "Cannot connect to backend server", see the comprehensive **[Troubleshooting Guide](TROUBLESHOOTING.md)** for detailed solutions.
 
 ---
 
