@@ -41,6 +41,7 @@ For comprehensive guides and tutorials, check out:
 
 - **[Step-by-Step Guide](STEP_BY_STEP_GUIDE.md)** - Complete walkthrough from installation to contribution
 - **[Quick Start](QUICKSTART.md)** - Get up and running in 3 commands
+- **[Troubleshooting Guide](TROUBLESHOOTING.md)** - 🔧 Solutions for common issues and connection errors
 - **[Contributing Guide](CONTRIBUTING.md)** - How to contribute to the project
 - **[Setup Guide](docs/SETUP_GUIDE.md)** - Detailed setup instructions
 - **[Project Documentation](docs/PROJECT_DOCUMENTATION.md)** - Full technical documentation
