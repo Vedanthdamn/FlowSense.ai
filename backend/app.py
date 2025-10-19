@@ -16,7 +16,8 @@ from collections import defaultdict
 from supabase_logger import SupabaseLogger
 
 app = Flask(__name__)
-CORS(app)
+# Configure CORS to allow requests from frontend (localhost:3000)
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000"]}}, supports_credentials=True)
 
 # Global variables
 model = None
@@ -181,7 +182,7 @@ def get_status():
     elapsed = int(time.time() - signal_start_time)
     remaining = max(0, signal_timings[current_active_lane] - elapsed)
     
-    return jsonify({
+    response_data = {
         "success": True,
         "data": {
             "current_lane": current_active_lane,
@@ -190,18 +191,25 @@ def get_status():
             "remaining_time": remaining,
             "timestamp": datetime.now().isoformat()
         }
-    })
+    }
+    
+    # Log API response for debugging
+    print(f"[API] GET /api/status - Response: {response_data['data']['current_lane']}, Vehicle counts: {current_lane_counts}")
+    
+    return jsonify(response_data)
 
 @app.route('/api/history', methods=['GET'])
 def get_history():
     """Get traffic history from Supabase"""
     try:
         history = supabase_logger.get_recent_logs(limit=50)
+        print(f"[API] GET /api/history - Retrieved {len(history) if history else 0} records")
         return jsonify({
             "success": True,
             "data": history
         })
     except Exception as e:
+        print(f"[API] GET /api/history - Error: {str(e)}")
         return jsonify({
             "success": False,
             "error": str(e)
@@ -215,7 +223,10 @@ def start_processing():
     data = request.json
     video_source = data.get('video_path', 0)  # 0 for webcam
     
+    print(f"[API] POST /api/start - Request received with video_source: {video_source}")
+    
     if processing_video:
+        print("[API] POST /api/start - Already processing, returning 400")
         return jsonify({
             "success": False,
             "message": "Already processing"
@@ -229,6 +240,7 @@ def start_processing():
     thread.daemon = True
     thread.start()
     
+    print(f"[API] POST /api/start - Processing started successfully")
     return jsonify({
         "success": True,
         "message": "Processing started"
@@ -240,6 +252,7 @@ def stop_processing():
     global processing_video
     processing_video = False
     
+    print("[API] POST /api/stop - Processing stopped")
     return jsonify({
         "success": True,
         "message": "Processing stopped"
@@ -248,6 +261,7 @@ def stop_processing():
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
+    print("[API] GET /api/health - Health check requested")
     return jsonify({
         "success": True,
         "status": "healthy",

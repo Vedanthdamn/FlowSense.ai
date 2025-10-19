@@ -7,7 +7,10 @@ import LaneDensity from './components/LaneDensity'
 import TrafficHistory from './components/TrafficHistory'
 import ControlPanel from './components/ControlPanel'
 
-const API_BASE_URL = 'http://localhost:5000/api'
+// Use environment variable for API base URL, fallback to localhost:5000
+const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api`
+
+console.log('[FlowSense] API Base URL:', API_BASE_URL)
 
 function App() {
   const [trafficData, setTrafficData] = useState(null)
@@ -35,7 +38,14 @@ function App() {
 
   const fetchStatus = async () => {
     try {
+      console.log(`[FlowSense] Fetching status from: ${API_BASE_URL}/status`)
       const response = await axios.get(`${API_BASE_URL}/status`)
+      console.log('[FlowSense] Status response received:', {
+        success: response.data.success,
+        currentLane: response.data.data?.current_lane,
+        laneCounts: response.data.data?.lane_counts,
+        timestamp: response.data.data?.timestamp
+      })
       if (response.data.success) {
         setTrafficData(response.data.data)
         setError(null)
@@ -48,56 +58,66 @@ function App() {
       setIsConnected(false)
       // Provide more specific error messages based on error type
       if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+        console.error('[FlowSense] Network error - cannot connect to backend:', API_BASE_URL)
         setError('Cannot connect to backend server. Please ensure the backend is running on http://localhost:5000')
       } else if (err.response) {
         // Backend responded with an error status
+        console.error('[FlowSense] Backend error response:', err.response.status, err.response.statusText)
         setError(`Backend error: ${err.response.status} - ${err.response.statusText}`)
       } else if (err.request) {
         // Request was made but no response received
+        console.error('[FlowSense] No response from backend:', err.request)
         setError('No response from backend. Please check if the backend server is running.')
       } else {
+        console.error('[FlowSense] Error fetching status:', err.message)
         setError(`Failed to fetch traffic status: ${err.message}`)
       }
-      console.error('Error fetching status:', err)
+      console.error('[FlowSense] Full error details:', err)
     }
   }
 
   const fetchHistory = async () => {
     try {
+      console.log(`[FlowSense] Fetching history from: ${API_BASE_URL}/history`)
       const response = await axios.get(`${API_BASE_URL}/history`)
       if (response.data.success) {
+        console.log(`[FlowSense] History response received: ${response.data.data?.length || 0} records`)
         setHistory(response.data.data)
       }
     } catch (err) {
-      console.error('Error fetching history:', err)
+      console.error('[FlowSense] Error fetching history:', err)
     }
   }
 
   const handleStartProcessing = async (videoPath) => {
     try {
+      console.log(`[FlowSense] Starting video processing with path: ${videoPath || 'webcam'}`)
       const response = await axios.post(`${API_BASE_URL}/start`, {
         video_path: videoPath || 0
       })
       if (response.data.success) {
+        console.log('[FlowSense] Processing started successfully')
         setIsProcessing(true)
         setError(null)
       }
     } catch (err) {
+      console.error('[FlowSense] Error starting processing:', err)
       setError('Failed to start processing')
-      console.error('Error starting processing:', err)
     }
   }
 
   const handleStopProcessing = async () => {
     try {
+      console.log('[FlowSense] Stopping video processing')
       const response = await axios.post(`${API_BASE_URL}/stop`)
       if (response.data.success) {
+        console.log('[FlowSense] Processing stopped successfully')
         setIsProcessing(false)
         setError(null)
       }
     } catch (err) {
+      console.error('[FlowSense] Error stopping processing:', err)
       setError('Failed to stop processing')
-      console.error('Error stopping processing:', err)
     }
   }
 
