@@ -1133,8 +1133,12 @@ Cannot connect to backend server
 
 2. **Test backend directly:**
 ```bash
+# Test using localhost (or 127.0.0.1)
 curl http://localhost:5000/api/health
 # Should return: {"success":true,"status":"healthy",...}
+
+# Alternative:
+curl http://127.0.0.1:5000/api/health
 ```
 
 3. **Check browser console for detailed logs:**
