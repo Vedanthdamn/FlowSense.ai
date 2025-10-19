@@ -14,6 +14,7 @@ function App() {
   const [history, setHistory] = useState([])
   const [isProcessing, setIsProcessing] = useState(false)
   const [error, setError] = useState(null)
+  const [isConnected, setIsConnected] = useState(false)
 
   useEffect(() => {
     // Poll for status updates every 1 second
@@ -38,9 +39,25 @@ function App() {
       if (response.data.success) {
         setTrafficData(response.data.data)
         setError(null)
+        setIsConnected(true)
+      } else {
+        setError('Backend returned unsuccessful response')
+        setIsConnected(false)
       }
     } catch (err) {
-      setError('Failed to fetch traffic status')
+      setIsConnected(false)
+      // Provide more specific error messages based on error type
+      if (err.code === 'ERR_NETWORK' || err.message === 'Network Error') {
+        setError('Cannot connect to backend server. Please ensure the backend is running on http://localhost:5000')
+      } else if (err.response) {
+        // Backend responded with an error status
+        setError(`Backend error: ${err.response.status} - ${err.response.statusText}`)
+      } else if (err.request) {
+        // Request was made but no response received
+        setError('No response from backend. Please check if the backend server is running.')
+      } else {
+        setError('Failed to fetch traffic status: ' + err.message)
+      }
       console.error('Error fetching status:', err)
     }
   }
@@ -86,12 +103,22 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <Header />
+      <Header isConnected={isConnected} />
       
       <main className="container mx-auto px-4 py-8">
         {error && (
           <div className="mb-6 bg-red-500/10 border border-red-500 text-red-500 px-6 py-4 rounded-lg">
-            {error}
+            <div className="font-semibold mb-2">⚠️ Connection Error</div>
+            <div className="mb-3">{error}</div>
+            <div className="text-sm mt-3 pt-3 border-t border-red-500/30">
+              <div className="font-semibold mb-2">To fix this issue:</div>
+              <ol className="list-decimal list-inside space-y-1 ml-2">
+                <li>Make sure the backend server is running</li>
+                <li>Run <code className="bg-red-500/20 px-2 py-1 rounded">cd backend && source venv/bin/activate && python app.py</code> in a terminal</li>
+                <li>Check that port 5000 is not blocked by firewall</li>
+                <li>Verify the backend is accessible at <a href="http://localhost:5000/api/health" target="_blank" rel="noopener noreferrer" className="underline hover:text-red-300">http://localhost:5000/api/health</a></li>
+              </ol>
+            </div>
           </div>
         )}
 
