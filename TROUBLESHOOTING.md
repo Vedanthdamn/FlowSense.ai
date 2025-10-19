@@ -732,8 +732,6 @@ npm install <package-name>
 
 ---
 
-**Last Updated:** October 2024
-
 **Made with ❤️ for the FlowSense.ai community**
 
 ---
