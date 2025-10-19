@@ -17,7 +17,7 @@ from supabase_logger import SupabaseLogger
 
 app = Flask(__name__)
 # Configure CORS to allow requests from frontend (localhost:3000)
-CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000", "http://127.0.0.1:3000"]}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Global variables
 model = None
@@ -263,10 +263,8 @@ def health_check():
     """Health check endpoint"""
     print("[API] GET /api/health - Health check requested")
     return jsonify({
-        "success": True,
-        "status": "healthy",
-        "model_loaded": model is not None,
-        "timestamp": datetime.now().isoformat()
+        "status": "ok",
+        "message": "Backend is running"
     })
 
 if __name__ == '__main__':
@@ -283,8 +281,7 @@ if __name__ == '__main__':
     controller_thread.daemon = True
     controller_thread.start()
     
-    print("\nStarting Flask server...")
-    print("API will be available at http://localhost:5000")
+    print("\n✅ Flask backend running on http://localhost:5000")
     print("\nAvailable endpoints:")
     print("  GET  /api/status   - Get current traffic status")
     print("  GET  /api/history  - Get traffic history")
@@ -293,4 +290,4 @@ if __name__ == '__main__':
     print("  GET  /api/health   - Health check")
     print("=" * 50)
     
-    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
+    app.run(host='0.0.0.0', port=5000, debug=True, threaded=True)
