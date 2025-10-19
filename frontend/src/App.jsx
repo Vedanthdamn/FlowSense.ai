@@ -56,7 +56,7 @@ function App() {
         // Request was made but no response received
         setError('No response from backend. Please check if the backend server is running.')
       } else {
-        setError('Failed to fetch traffic status: ' + err.message)
+        setError(`Failed to fetch traffic status: ${err.message}`)
       }
       console.error('Error fetching status:', err)
     }

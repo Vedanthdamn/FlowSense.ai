@@ -45,6 +45,12 @@ When an error occurs, the UI displays step-by-step instructions to fix the issue
 const [isConnected, setIsConnected] = useState(false)
 ```
 
+**Design Decisions:**
+- `fetchStatus()`: Full error handling with user feedback (critical for app functionality)
+- `fetchHistory()`: Minimal error handling with console logging only (optional feature, fails gracefully)
+- Connection status is based on the critical `fetchStatus()` endpoint
+- Errors are categorized by type: Network errors, HTTP errors, timeout errors, and general errors
+
 **Enhanced Error Handling:**
 ```javascript
 const fetchStatus = async () => {
@@ -68,7 +74,7 @@ const fetchStatus = async () => {
     } else if (err.request) {
       setError('No response from backend. Please check if the backend server is running.')
     } else {
-      setError('Failed to fetch traffic status: ' + err.message)
+      setError(`Failed to fetch traffic status: ${err.message}`)
     }
     console.error('Error fetching status:', err)
   }
